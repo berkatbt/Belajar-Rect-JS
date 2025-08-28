@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document</title>
+</head>
+<body>
+  <h1>Output</h1>
+  <pre id="out"></pre>
+
+  <script>
+    // tampilkan log ke halaman & console
+    const out = document.getElementById('out');
+    const print = (...args) => {
+      const msg = args.map(v => (typeof v === 'object' ? JSON.stringify(v, null, 2) : String(v))).join(' ');
+      out.textContent += msg + '\n';
+      window.__origlog && window.__origlog(...args);
+    };
+    window.__origlog = console.log;
+    console.log = print;
+
+
+    //var vs let di dalam block
+    {
+      var foo1 = "belajar JavaScript";
+      let bar1 = "belajar React";
+    }
+    console.log("foo1 (var dalam block) =", foo1);
+    console.log("bar1 (let dalam block) =", (typeof bar1 === 'undefined') ? "tidak terdefinisi (block-scoped)" : bar1);
+
+    // 2) Shadowing let i dalam for, var i di luar
+    var i = "belajar JavaScript";
+    for (let i = 1; i <= 5; i++) {
+      console.log("loop i =", i);
+    }
+    console.log("i di luar loop (var) =", i);
+
+    // 3) const + template literal
+    const foo = "belajar JavaScript";
+    const bar = "belajar React";
+
+    console.log("before reassignment " + foo + " dan " + bar);
+    console.log(`before reassignment ${foo} dan ${bar}`);
+
+    console.log(`10 tambah 7 adalah ${10 + 7}`);
+
+    // 4) function & arrow function
+    function kuadrat(x) { return x * x; }
+    console.log(`kuadrat 5 adalah ${kuadrat(5)}`);
+    console.log(`kuadrat 10 adalah ${kuadrat(10)}`);
+
+    // 5) Ternary & perbandingan
+    const user = "admin";
+    let result = "";
+    if (user === "admin") { result = "WELCOME admin"; }
+    else { result = "User bukan admin"; }
+    const result2 = (user === "admin") ? "WELCOME admin" : "User bukan admin";
+    console.log(result);
+    console.log(result2);
+
+    const input = "100";
+    const result3 = (typeof input === "number") ? "Input adalah number" : "Input bukan number";
+    console.log(result3);
+
+    const input2 = 100;
+    const result4 = (typeof input2 === "number") ? "Input adalah number" : "Input bukan number";
+    console.log(result4);
+
+    const nilai = "100";
+    const result5 = `<div class="${Number.isInteger(Number(nilai)) ? 'valid' : 'invalid'}">`;
+    console.log(result5);
+
+    // 6) AND &&, perbandingan, case sensitivity
+    let user2 = "admin";
+    let password = "admin123";
+    if ((user2 === "admin") && (password === "admin123")) {
+      console.log("Login Berhasil (user2)");
+    }
+
+    let user3 = "admin";
+    user3 = "berkat";
+    (user3 === "Andmin") && console.log("Login Berhasil (user3)"); // tidak tampil karena false
+
+    let user4 = "Andmin";
+    (user4 === "Andmin") ? console.log("Login Berhasil (user4 ?:)") : "";
+    (user4 === "Admin") && console.log("Login Berhasil (user4 &&)"); // tidak tampil
+
+    // 7) Variasi fungsi
+    const kuadrat2 = function(x){ return x * x; };
+    console.log("kuadrat2(5) =", kuadrat2(5));
+
+    const kuadrat3 = (x) => { return x * x; };
+    console.log("kuadrat3(6) =", kuadrat3(6));
+
+    const kuadrat4 = x => x * x;
+    console.log("kuadrat4(7) =", kuadrat4(7));
+
+    const kuadrat5 = x => x * x;
+    console.log("kuadrat5(8) =", kuadrat5(8));
+
+    // 8) Random helpers
+    const generateRandom  = () => Math.floor(Math.random() * 100) + 1;
+    console.log("random 1-100 =", generateRandom());
+
+    const generateRandom2 = (start, end) =>
+      Math.floor(Math.random() * (end - start + 1)) + start;
+    console.log("random 50-100 =", generateRandom2(50, 100));
+
+    const generateRandom3 = (start = 1, end = 10) =>
+      Math.floor(Math.random() * (end - start + 1)) + start;
+    console.log("random default 1-10 =", generateRandom3());
+    console.log("random 20-10? (start=20,end=10) -> dibalik otomatis =", (() => {
+      let a=20,b=10; if (a>b){ [a,b]=[b,a]; } return generateRandom2(a,b);
+    })());
+    console.log("random 20-50 =", generateRandom3(20, 50));
+
+    // 9) Higher-order functions
+    function total (a, b, cari) { return cari(a + b); }
+    function tambah (x, y) { return x + y; }
+    console.log("total(10,20,tambah) =", total(10, 20, tambah));
+
+    const total2 = (a, b, cari) => cari(a + b);
+    const tambah2 = (x, y) => x + y;
+    console.log("total2(10,20,tambah2) =", total2(10, 20, tambah2));
+
+    const total3 = (a, b, cari) => cari(a + b);
+    console.log("total3(5,10, (n)=>n ) =", total3(5, 10, (n) => n)); // perbaikan dari baris yang salah
+
+    // 10) Class & object
+    class Laptop {
+      constructor (milik, merk) {
+        this.milik = milik;
+        this.merk = merk;
+      }
+      hidupkanLaptop(){
+        return  `Hidupkan laptop ${this.merk} milik ${this.milik}`;
+      }
+    }
+
+    let laptop1 = new Laptop("Admin", "Asus");
+    console.log("laptop1.merk =", laptop1.merk);
+    console.log("laptop1.milik =", laptop1.milik);
+    console.log("laptop1.hidupkanLaptop() =", laptop1.hidupkanLaptop());
+
+    let laptopAndi = {
+      milik : "Andi",
+      merk  : "Acer",
+      hidupkanLaptop : function() {
+        return `Hidupkan laptop ${this.merk} milik ${this.milik}`;
+      }
+    };
+    console.log("laptopAndi.merk =", laptopAndi.merk);
+    console.log("laptopAndi.milik =", laptopAndi.milik);
+    console.log("laptopAndi.hidupkanLaptop() =", laptopAndi.hidupkanLaptop());
+
+    let laptopBudi = {
+      milik : "Budi",
+      merk  : "Toshiba",
+      hidupkanLaptop() {
+        return `Hidupkan laptop ${this.merk} milik ${this.milik}`;
+      }
+    };
+    console.log("laptopBudi.merk =", laptopBudi.merk);
+    console.log("laptopBudi.milik =", laptopBudi.milik);
+    console.log("laptopBudi.hidupkanLaptop() =", laptopBudi.hidupkanLaptop());
+
+    let laptopRudi = {
+      milik : "Rudi",
+      merk  : "Acer",
+      foo() { return this; },       // method biasa -> this = object
+      bar : () => this              // arrow -> this = window (atau undefined di strict)
+    };
+    console.log("laptopRudi.foo() =", laptopRudi.foo());
+    console.log("laptopRudi.bar() =", laptopRudi.bar());
+
+    let laptopSusi = {
+      milik : "Susi",
+      merk  : "Apple",
+      // Arrow function tidak punya 'this' sendiri → akan ambil dari lexical scope (bukan objek)
+      hidupkanLaptop : () => `Hidupkan laptop ${this?.merk} milik ${this?.milik}`
+    };
+    console.log("laptopSusi.merk =", laptopSusi.merk);
+    console.log("laptopSusi.milik =", laptopSusi.milik);
+    console.log("laptopSusi.hidupkanLaptop() =", laptopSusi.hidupkanLaptop());
+
+    // 11) Object utilities
+    let mahasiswa = {
+      nama : "Berkat",
+      umur : 20,
+      jurusan : "RPL",
+      getInfo() {
+        return `Nama saya ${this.nama}, umur saya ${this.umur}, jurusan saya ${this.jurusan}`;
+      }
+    };
+    console.log("mahasiswa =", mahasiswa);
+    mahasiswa.umur = 20;
+    mahasiswa.tempatlahir = "Bandung";
+    console.log("mahasiswa update =", mahasiswa);
+
+    let mahasiswa2 = { nama: "Andi", umur: 21, jurusan: "RPL" };
+    for (let prop in mahasiswa2) {
+      console.log(`${prop} : ${mahasiswa2[prop]}`);
+    }
+
+    let mahasiswa3 = { nama: "Budi", umur: 22, jurusan: "RPL" };
+    console.log("Object.keys =", Object.keys(mahasiswa3));
+    console.log("Object.values =", Object.values(mahasiswa3));
+    console.log("Object.entries =", Object.entries(mahasiswa3));
+  </script>
+</body>
+</html>
